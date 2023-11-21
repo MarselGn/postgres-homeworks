@@ -19,7 +19,7 @@ FROM products
 JOIN suppliers ON suppliers.supplier_id = products.supplier_id
 JOIN categories ON categories.category_id = products.category_id
 WHERE products.discontinued = 0 and products.units_in_stock < 25 AND (category_name = 'Condiments' OR category_name = 'Dairy Products')
-
+ORDER BY products.units_in_stock
 -- 3. Список компаний заказчиков (company_name из табл customers), не сделавших ни одного заказа
 SELECT company_name
 FROM customers
@@ -30,5 +30,4 @@ WHERE NOT EXISTS (SELECT * FROM orders WHERE orders.customer_id = customers.cust
 -- Этот запрос написать именно с использованием подзапроса.
 SELECT DISTINCT product_name
 FROM products
-JOIN order_details USING(product_id)
-WHERE order_details.quantity = 10
+WHERE EXISTS (SELECT * FROM order_details WHERE products.product_id = order_details.product_id and order_details.quantity = 10)
